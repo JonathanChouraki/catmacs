@@ -184,7 +184,7 @@
 (general-define-key
  "C-s" #'save-buffer
  "C-f" #'swiper
- "C-p" #'counsel-project-find-file)
+ "C-p" #'counsel-projectile-find-file)
 
 ; escape quit transient window
 (general-define-key
