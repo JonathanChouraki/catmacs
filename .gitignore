@@ -1,1 +1,3 @@
 elpa
+*.sqlite
+projectile-bookmarks.eld
