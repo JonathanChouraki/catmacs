@@ -53,8 +53,6 @@
 
                                         ; == Evil == ;
 
-(use-package magit)
-
 (use-package evil
   :bind (("C-k" . evil-scroll-up)
          ("C-j" . evil-scroll-down))
@@ -165,6 +163,7 @@
 (use-package counsel-projectile
   :config (counsel-projectile-mode))
 
+(use-package magit)
 
 (use-package forge)
 
@@ -175,6 +174,7 @@
   "ct" '(counsel-load-theme :which-key "choose theme")
   "x" '(counsel-M-x :which-key "M-x")
   "w" '(evil-window-map :which-key "window management")
+  "m" '(magit :which-key "magit")
   "p" '(projectile-command-map :which-key "projectile"))
 
 (define-key evil-motion-state-map (kbd "C-f") nil) ; unbind C-f to use swiper instead
