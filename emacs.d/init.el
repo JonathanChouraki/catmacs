@@ -136,10 +136,11 @@
 
                                         ; == Programming == ;
 (setq-default
- indent-tabs-mode nil)       ; Use space for indenting
+ indent-tabs-mode nil ; Use space for indenting
+ tab-width 2)
                                         ;show-trailing-whitespace t) ; FIXME only show whitespace in prog mode
-
                                         ;(add-hook 'prog-mode-hook 'whitepace-mode)
+(setq indent-line-function 'insert-tab)
 
 (use-package rjsx-mode
                                         ;FIXME: try to detect if a js file is jsx or not.
@@ -186,7 +187,7 @@
  "C-f" #'swiper
  "C-p" #'counsel-projectile-find-file)
 
-; escape quit transient window
+                                        ; escape quit transient window
 (general-define-key
-   :keymaps 'transient-base-map
-   "<escape>" 'transient-quit-one)
+ :keymaps 'transient-base-map
+ "<escape>" 'transient-quit-one)
