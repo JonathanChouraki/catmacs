@@ -1,4 +1,4 @@
-                                        ; Set backup out of the way
+; Set backup out of the way
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
@@ -40,49 +40,10 @@
 ;; M-x all-the-icons-install-fonts
 (use-package all-the-icons)
 
-(use-package doom-modeline
-  :init (doom-modeline-mode 1))
-
-(use-package doom-themes
-  :config
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  :init (load-theme 'catmacs-palenight t))
-
 (set-face-attribute 'fringe nil :background nil) ; Set the background of the fringe the theme background color
-
-                                        ; == Evil == ;
-
-(use-package evil
-  :bind (("C-k" . evil-scroll-up)
-         ("C-j" . evil-scroll-down))
-  :init
-  (setq evil-want-keybinding nil)
-  (setq evil-collection-setup-minibuffer t)
-  :config
-  (evil-mode 1))
-
-(use-package evil-collection
-  :after evil
-  :config
-  (evil-collection-init))
-
-(use-package evil-surround
-  :config
-  (global-evil-surround-mode))
-
-(use-package general
-  :config
-  (general-create-definer catmacs/leader-key
-    :keymaps '(normal visual emacs)
-    :prefix "SPC"))
 
                                         ; == UX == ;
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
-(setq display-line-numbers-type 'relative)
-
-(global-display-line-numbers-mode t)
 
 (use-package rainbow-delimiters
   :hook (emacs-lisp-mode . rainbow-delimiters-mode))
@@ -142,13 +103,6 @@
                                         ;(add-hook 'prog-mode-hook 'whitepace-mode)
 (setq indent-line-function 'insert-tab)
 
-(use-package rjsx-mode
-                                        ;FIXME: try to detect if a js file is jsx or not.
-                                        ; if yes use rjsx
-                                        ; else use js2-mode ?
-  :config (setq js-indent-level 2)
-  :mode ("\\.jsx?$" . rjsx-mode))
-
 (use-package highlight-indent-guides)
 (setq highlight-indent-guides-method 'character)
 (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
@@ -170,16 +124,6 @@
 
 (use-package org)
 
-                                        ; == Keybindings == ;
-(catmacs/leader-key
-  "ct" '(counsel-load-theme :which-key "choose theme")
-  "x" '(counsel-M-x :which-key "M-x")
-  "w" '(evil-window-map :which-key "window management")
-  "m" '(magit :which-key "magit")
-  "p" '(projectile-command-map :which-key "projectile"))
-
-(define-key evil-motion-state-map (kbd "C-f") nil) ; unbind C-f to use swiper instead
-(define-key evil-normal-state-map (kbd "C-p") nil) ; unbind C-p to use counsel-project-find-file instead
 (global-unset-key (kbd "C-s")) ; unbind C-s to use save buffer instead
 
 (general-define-key
@@ -191,3 +135,150 @@
 (general-define-key
  :keymaps 'transient-base-map
  "<escape>" 'transient-quit-one)
+
+(use-package evil
+  :bind (("C-k" . evil-scroll-up)
+         ("C-j" . evil-scroll-down))
+  :init
+  (setq evil-want-keybinding nil)
+  (setq evil-collection-setup-minibuffer t)
+  :config
+  (evil-mode 1)
+  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+  (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+  (evil-set-initial-state 'messages-buffer-mode 'normal)
+  (evil-set-initial-state 'dashboard-mode 'normal)
+
+  (define-key evil-motion-state-map (kbd "C-f") nil)
+  (define-key evil-normal-state-map (kbd "C-p") nil))
+
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init))
+
+(use-package evil-surround
+  :config
+  (global-evil-surround-mode))
+
+(use-package doom-modeline
+  :init (doom-modeline-mode 1))
+
+(use-package doom-themes
+  :config
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  :init (load-theme 'catmacs-palenight t))
+
+(setq display-line-numbers-type 'relative)
+
+(global-display-line-numbers-mode t)
+
+(dolist (mode '(org-mode-hook
+                term-mode-hook
+                shell-mode-hook
+                eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+(use-package general
+  :config
+  (general-create-definer catmacs/leader-key
+    :keymaps '(normal visual emacs)
+    :prefix "SPC"))
+
+(catmacs/leader-key
+  "ct" '(counsel-load-theme :which-key "choose theme")
+  "cm" '(magit :which-key "magit")
+  "x" '(counsel-M-x :which-key "M-x")
+  "w" '(evil-window-map :which-key "window management")
+  "l" '(lsp-command-map :which-key "lsp")
+  "p" '(projectile-command-map :which-key "projectile"))
+
+(use-package avy)
+
+(catmacs/leader-key
+  "aa" '(avy-goto-line :which-key "avy line")
+  "as" '(avy-goto-char :which-key "avy char")
+  "ad" '(avy-goto-word-or-subword-1 :which-key "avy word"))
+
+(defun catmacs/org-mode-setup ()
+  (org-indent-mode 1)
+                                        ;(variable-pitch-mode 1)
+  (visual-line-mode 1))
+
+(use-package org
+  :hook (org-mode . catmacs/org-mode-setup)
+  :config
+  (setq org-ellipsis " ▾"))
+
+(require 'ob-js)
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((shell . t)
+   (js . t)))
+
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("sh" . "src sh"))
+(add-to-list 'org-structure-template-alist '("js" . "src javascript"))
+(require 'org-tempo)
+
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+(defun catmacs/org-mode-visual-fill ()
+  (setq visual-fill-column-width 100
+        visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
+
+(use-package visual-fill-column
+  :hook (org-mode . catmacs/org-mode-visual-fill))
+
+(defun catmacs/lsp-mode-setup ()
+  (lsp-enable-which-key-intgration)
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode))
+
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :init (setq lsp-keymap-prefix "C-c l")
+  :config 
+  (lsp-enable-which-key-integration t)
+  (define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
+  :hook ((lsp-mode  catmacs/lsp-mode-setup)
+         (rjsx-mode . lsp-deferred)))
+
+(use-package lsp-ivy)
+
+(use-package rjsx-mode
+  :mode ("\\.jsx?$" . rjsx-mode)
+  :config (setq js-indent-level 2))
+
+(defun catmacs/eslint-fix-file ()
+  (interactive)
+  (shell-command (concat "eslint --fix " (buffer-file-name))))
+
+(eval-after-load 'rjsx-mode
+  '(add-hook 'rjsx-mode-hook
+             (lambda ()
+               (add-hook 'after-save-hook #'catmacs/eslint-fix-file nil t))))
+
+(use-package company
+  :after lsp-mode
+  :hook (lsp-mode . company-mode)
+  :bind (:map company-active-map
+              ("<tab>" . company-complete-selection))
+  (:map lsp-mode-map
+        ("<tab>" . company-indent-or-complete-common))
+  :custom
+ (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
