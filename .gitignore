@@ -1,3 +1,6 @@
 elpa
 *.sqlite
 projectile-bookmarks.eld
+eshell/
+custom.el
+.lsp-session-*

@@ -1,5 +1,6 @@
 #+title: Catmacs
 #+PROPERTY: header-args:emacs-lisp :tangle ./emacs.d/init.el :mkdirp yes
+#+EXPORT_FILE_NAME: README.md
 
 Catmacs is my own emacs configuration, inspired by System Crafter emacs from scratch series.
 
