@@ -2,5 +2,5 @@ elpa
 *.sqlite
 projectile-bookmarks.eld
 eshell/
-custom.el
+emacs.d/custom.el
 .lsp-session-*

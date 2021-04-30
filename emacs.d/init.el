@@ -28,7 +28,6 @@
 (scroll-bar-mode -1)        ; Disable visible scrollbar
 (tool-bar-mode -1)          ; Disable the toolbar
 (tooltip-mode -1)           ; Disable tooltips
-(set-fringe-mode 15)        ; Give some breathing room
 (menu-bar-mode -1)          ; Disable the menu bar
 (blink-cursor-mode 0)       ; Not blinking cursor
 (set-face-attribute 'default nil :font "Fira Code" :height 110 :weight 'semi-bold)
@@ -39,8 +38,6 @@
 ;;
 ;; M-x all-the-icons-install-fonts
 (use-package all-the-icons)
-
-(set-face-attribute 'fringe nil :background nil) ; Set the background of the fringe the theme background color
 
                                         ; == UX == ;
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -173,6 +170,9 @@
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
   :init (load-theme 'catmacs-palenight t))
+
+(set-fringe-mode 15)
+(set-face-attribute 'fringe nil :background nil)
 
 (setq display-line-numbers-type 'relative)
 
