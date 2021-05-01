@@ -32,6 +32,12 @@
 (blink-cursor-mode 0)       ; Not blinking cursor
 (set-face-attribute 'default nil :font "Fira Code" :height 110 :weight 'semi-bold)
 
+(use-package general
+  :config
+  (general-create-definer catmacs/leader-key
+    :keymaps '(normal visual emacs)
+    :prefix "SPC"))
+
 ;; NOTE: The first time you load your configuration on a new machine, you'll
 ;; need to run the following command interactively so that mode line icons
 ;; display correctly:
@@ -60,16 +66,15 @@
               ("TAB" . ivy-alt-done)
               ("C-l" . ivy-alt-done)
               ("C-j" . ivy-next-line)
-              ("C-k" . ivy-previous-line)
+              ("C-f" . ivy-previous-line)
               :map ivy-switch-buffer-map
-              ("C-k" . ivy-previous-line)
+              ("C-f" . ivy-previous-line)
               ("C-l" . ivy-done)
               ("C-d" . ivy-switch-buffer-kill)
               :map ivy-reverse-i-search-map
               ("C-k" . ivy-previous-line)
               ("C-d" . ivy-reverse-i-search-kill))
-  :config
-  (ivy-mode 1))
+  :config (ivy-mode 1))
 
 (use-package ivy-rich
   :init
@@ -162,6 +167,14 @@
   :config
   (global-evil-surround-mode))
 
+(catmacs/leader-key
+  "ct" '(counsel-load-theme :which-key "choose theme")
+  "cm" '(magit :which-key "magit")
+  "x" '(counsel-M-x :which-key "M-x")
+  "w" '(evil-window-map :which-key "window management")
+  "l" '(lsp-command-map :which-key "lsp")
+  "p" '(projectile-command-map :which-key "projectile"))
+
 (use-package doom-modeline
   :init (doom-modeline-mode 1))
 
@@ -181,22 +194,41 @@
 (dolist (mode '(org-mode-hook
                 term-mode-hook
                 shell-mode-hook
+                neotree-mode-hook
                 eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
-(use-package general
+(use-package centaur-tabs
+  :demand
   :config
-  (general-create-definer catmacs/leader-key
-    :keymaps '(normal visual emacs)
-    :prefix "SPC"))
+  (setq centaur-tabs-show-new-tab-button nil
+   centaur-tabs-style "box"
+   centaur-tabs-set-icons t
+   centaur-tabs-gray-out-icons 'buffer
+   centaur-tabs-set-close-button nil
+   centaur-tabs-height 64
+   centaur-tabs-set-modified-marker t
+   centaur-tabs-cycle-scope 'tabs
+   centaur-tabs-set-bar 'over)
+  (centaur-tabs-mode t)
+  (centaur-tabs-headline-match)
+  (centaur-tabs-group-by-projectile-project)
+  :bind
+  (:map evil-normal-state-map
+        ("g t" . centaur-tabs-forward)
+        ("g T" . centaur-tabs-backward)))
 
 (catmacs/leader-key
-  "ct" '(counsel-load-theme :which-key "choose theme")
-  "cm" '(magit :which-key "magit")
-  "x" '(counsel-M-x :which-key "M-x")
-  "w" '(evil-window-map :which-key "window management")
-  "l" '(lsp-command-map :which-key "lsp")
-  "p" '(projectile-command-map :which-key "projectile"))
+  "tt" '(centaur-tabs--create-new-tab :which-key "new tab")
+  "ts" '(centaur-tabs-counsel-switch-group :which-key "switch tabs group"))
+
+(use-package neotree
+  :config
+  (setq neo-theme 'icons))
+
+
+(catmacs/leader-key
+  "n" '(neotree-toggle :which-key "neotree"))
 
 (use-package avy)
 
@@ -239,6 +271,12 @@
 
 (use-package visual-fill-column
   :hook (org-mode . catmacs/org-mode-visual-fill))
+
+(use-package ob-async)
+
+;(expand-file-name "ob-shstream.el" "~/emacs.d/lisp/")
+
+;(require 'ob-shstream)
 
 (defun catmacs/lsp-mode-setup ()
   (lsp-enable-which-key-intgration)

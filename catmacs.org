@@ -1,4 +1,4 @@
-#+title: Catmacs
+#+TITLE: Catmacs
 #+PROPERTY: header-args:emacs-lisp :tangle ./emacs.d/init.el :mkdirp yes
 #+EXPORT_FILE_NAME: README.md
 
@@ -42,6 +42,12 @@ Catmacs is my own emacs configuration, inspired by System Crafter emacs from scr
   (blink-cursor-mode 0)       ; Not blinking cursor
   (set-face-attribute 'default nil :font "Fira Code" :height 110 :weight 'semi-bold)
 
+  (use-package general
+    :config
+    (general-create-definer catmacs/leader-key
+      :keymaps '(normal visual emacs)
+      :prefix "SPC"))
+
   ;; NOTE: The first time you load your configuration on a new machine, you'll
   ;; need to run the following command interactively so that mode line icons
   ;; display correctly:
@@ -70,16 +76,15 @@ Catmacs is my own emacs configuration, inspired by System Crafter emacs from scr
                 ("TAB" . ivy-alt-done)
                 ("C-l" . ivy-alt-done)
                 ("C-j" . ivy-next-line)
-                ("C-k" . ivy-previous-line)
+                ("C-f" . ivy-previous-line)
                 :map ivy-switch-buffer-map
-                ("C-k" . ivy-previous-line)
+                ("C-f" . ivy-previous-line)
                 ("C-l" . ivy-done)
                 ("C-d" . ivy-switch-buffer-kill)
                 :map ivy-reverse-i-search-map
                 ("C-k" . ivy-previous-line)
                 ("C-d" . ivy-reverse-i-search-kill))
-    :config
-    (ivy-mode 1))
+    :config (ivy-mode 1))
 
   (use-package ivy-rich
     :init
@@ -194,6 +199,21 @@ I use [[https://github.com/emacs-evil/evil][Evil]] for my vim needs. C-f and C-p
 
 #+end_src
 
+* Keybindings
+Custom keybinding, prefixed with general.
+
+#+begin_src emacs-lisp
+
+  (catmacs/leader-key
+    "ct" '(counsel-load-theme :which-key "choose theme")
+    "cm" '(magit :which-key "magit")
+    "x" '(counsel-M-x :which-key "M-x")
+    "w" '(evil-window-map :which-key "window management")
+    "l" '(lsp-command-map :which-key "lsp")
+    "p" '(projectile-command-map :which-key "projectile"))
+
+#+end_src
+
 * UI
 ** Theme
 I use the excellent doom theme as a base for my custom palenight (mainly swapped colors around).
@@ -233,32 +253,59 @@ I Use relative line numbering everywhere except for org-mode and some term-mode,
   (dolist (mode '(org-mode-hook
                   term-mode-hook
                   shell-mode-hook
+                  neotree-mode-hook
                   eshell-mode-hook))
     (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
 #+end_src
 
-* Keybindings
-Custom keybinding, prefixed with general.
+** Tabs
+Centaur tabs is a highly configurable tab plugin
 
 #+begin_src emacs-lisp
 
-  (use-package general
+  (use-package centaur-tabs
+    :demand
     :config
-    (general-create-definer catmacs/leader-key
-      :keymaps '(normal visual emacs)
-      :prefix "SPC"))
+    (setq centaur-tabs-show-new-tab-button nil
+     centaur-tabs-style "box"
+     centaur-tabs-set-icons t
+     centaur-tabs-gray-out-icons 'buffer
+     centaur-tabs-set-close-button nil
+     centaur-tabs-height 64
+     centaur-tabs-set-modified-marker t
+     centaur-tabs-cycle-scope 'tabs
+     centaur-tabs-set-bar 'over)
+    (centaur-tabs-mode t)
+    (centaur-tabs-headline-match)
+    (centaur-tabs-group-by-projectile-project)
+    :bind
+    (:map evil-normal-state-map
+          ("g t" . centaur-tabs-forward)
+          ("g T" . centaur-tabs-backward)))
 
   (catmacs/leader-key
-    "ct" '(counsel-load-theme :which-key "choose theme")
-    "cm" '(magit :which-key "magit")
-    "x" '(counsel-M-x :which-key "M-x")
-    "w" '(evil-window-map :which-key "window management")
-    "l" '(lsp-command-map :which-key "lsp")
-    "p" '(projectile-command-map :which-key "projectile"))
+    "tt" '(centaur-tabs--create-new-tab :which-key "new tab")
+    "ts" '(centaur-tabs-counsel-switch-group :which-key "switch tabs group"))
 
 #+end_src
 
 * UX
+** Neotree
+[[https://github.com/jaypei/emacs-neotree][Neotree]] is a tree plugin inspired by NerdTree for vim
+
+#+begin_src emacs-lisp
+
+  (use-package neotree
+    :config
+    (setq neo-theme 'icons))
+
+
+  (catmacs/leader-key
+    "n" '(neotree-toggle :which-key "neotree"))
+
+#+end_src
+
 ** Avy
 [[http://github.com/abo-abo/avy][Avy]] is a easy motion inspired jump anywhere package.
 
@@ -343,6 +390,23 @@ Add some margin left and right of an org documents.
 
 #+end_src
    
+** TODO Async execution
+[[https://github.com/astahlman/ob-async][ob-async]]
+
+#+begin_src emacs-lisp
+
+  (use-package ob-async)
+
+#+end_src
+
+org-sh-stream
+#+begin_src emacs-lisp
+
+  ;(expand-file-name "ob-shstream.el" "~/emacs.d/lisp/")
+
+  ;(require 'ob-shstream)
+
+#+end_src
 * Development
 ** Language server protocol
 IDE features are provided with languages servers and lsp-mode.
