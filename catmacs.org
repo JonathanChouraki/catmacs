@@ -260,7 +260,7 @@ I Use relative line numbering everywhere except for org-mode and some term-mode,
 #+end_src
 
 ** Tabs
-Centaur tabs is a highly configurable tab plugin
+[[https://github.com/ema2159/centaur-tabs][Centaur tabs]] is a highly configurable tab plugin
 
 #+begin_src emacs-lisp
 
