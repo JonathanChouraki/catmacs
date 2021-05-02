@@ -312,6 +312,16 @@
              (lambda ()
                (add-hook 'after-save-hook #'catmacs/eslint-fix-file nil t))))
 
+(use-package haskell-mode)
+(use-package hindent)
+(setq haskell-process-type 'cabal-new-repl)
+(setq haskell-process-log t)
+
+(add-hook 'haskell-mode-hook 'haskell-indent-mode)
+(add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+(add-hook 'haskell-mode-hook 'haskell-doc-mode)
+(add-hook 'haskell-mode-hook 'hindent-mode)
+
 (use-package company
   :after lsp-mode
   :hook (lsp-mode . company-mode)
