@@ -237,6 +237,8 @@
   "as" '(avy-goto-char :which-key "avy char")
   "ad" '(avy-goto-word-or-subword-1 :which-key "avy word"))
 
+(fset 'yes-or-no-p 'y-or-n-p)
+
 (defun catmacs/org-mode-setup ()
   (org-indent-mode 1)
                                         ;(variable-pitch-mode 1)

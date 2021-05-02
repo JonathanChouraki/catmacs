@@ -321,6 +321,14 @@ I Use relative line numbering everywhere except for org-mode and some term-mode,
 #+end_src
 
 **  TODO Ace window
+** Yes or no
+Respond at the "yes or no" question with just y or n
+
+#+begin_src emacs-lisp
+
+  (fset 'yes-or-no-p 'y-or-n-p)
+
+#+end_src
 
 * Org Mode
 ** Configuration
