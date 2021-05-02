@@ -237,6 +237,9 @@
   "as" '(avy-goto-char :which-key "avy char")
   "ad" '(avy-goto-word-or-subword-1 :which-key "avy word"))
 
+(use-package expand-region
+  :bind ("C-=" . er/expand-region))
+
 (fset 'yes-or-no-p 'y-or-n-p)
 
 (defun catmacs/org-mode-setup ()

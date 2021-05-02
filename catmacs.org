@@ -321,6 +321,15 @@ I Use relative line numbering everywhere except for org-mode and some term-mode,
 #+end_src
 
 **  TODO Ace window
+** Expand region
+
+#+begin_src emacs-lisp
+
+  (use-package expand-region
+    :bind ("C-=" . er/expand-region))
+
+#+end_src
+
 ** Yes or no
 Respond at the "yes or no" question with just y or n
 
