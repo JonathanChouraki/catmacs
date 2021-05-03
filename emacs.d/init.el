@@ -311,6 +311,12 @@
              (lambda ()
                (add-hook 'after-save-hook #'catmacs/eslint-fix-file nil t))))
 
+(use-package typescript-mode
+  :mode "\\.ts\\'"
+  :hook (typescript-mode . lsp-deferred)
+  :config
+  (setq typescript-indent-level 2))
+
 (use-package haskell-mode)
 (use-package hindent)
 (setq haskell-process-type 'cabal-new-repl)

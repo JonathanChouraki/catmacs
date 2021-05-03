@@ -512,7 +512,18 @@ Run ~eslint --fix~ automatically when saving file.
 
 look into [[https://github.com/abicky/nodejs-repl.el][nodejs-repl]] 
 
-*** TODO Typescript
+*** Typescript
+
+#+begin_src emacs-lisp
+
+  (use-package typescript-mode
+    :mode "\\.ts\\'"
+    :hook (typescript-mode . lsp-deferred)
+    :config
+    (setq typescript-indent-level 2))
+
+#+end_src
+
 *** TODO Haskell
 
 #+begin_src emacs-lisp
