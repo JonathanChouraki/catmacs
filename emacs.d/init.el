@@ -172,7 +172,6 @@
   "cm" '(magit :which-key "magit")
   "x" '(counsel-M-x :which-key "M-x")
   "w" '(evil-window-map :which-key "window management")
-  "l" '(lsp-command-map :which-key "lsp")
   "p" '(projectile-command-map :which-key "projectile"))
 
 (use-package doom-modeline
@@ -290,10 +289,10 @@
 
 (use-package lsp-mode
   :commands (lsp lsp-deferred)
-  :init (setq lsp-keymap-prefix "C-c l")
+  :init (setq lsp-keymap-prefix "C-l")
   :config 
   (lsp-enable-which-key-integration t)
-  (define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
+  (define-key lsp-mode-map (kbd "C-l") lsp-command-map)
   :hook ((lsp-mode  catmacs/lsp-mode-setup)
          (rjsx-mode . lsp-deferred)))
 
