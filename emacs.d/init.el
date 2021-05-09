@@ -317,6 +317,11 @@
   :config
   (setq typescript-indent-level 2))
 
+(eval-after-load 'typescript-mode
+  '(add-hook 'typescript-mode-hook
+             (lambda ()
+               (add-hook 'after-save-hook #'catmacs/eslint-fix-file nil t))))
+
 (use-package haskell-mode)
 (use-package hindent)
 (setq haskell-process-type 'cabal-new-repl)

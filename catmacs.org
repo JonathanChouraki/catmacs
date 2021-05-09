@@ -514,6 +514,8 @@ look into [[https://github.com/abicky/nodejs-repl.el][nodejs-repl]]
 
 *** Typescript
 
+**** Configuration
+
 #+begin_src emacs-lisp
 
   (use-package typescript-mode
@@ -524,7 +526,18 @@ look into [[https://github.com/abicky/nodejs-repl.el][nodejs-repl]]
 
 #+end_src
 
-*** TODO Haskell
+**** Eslint
+As with javascript, we run eslint automatically when saving file
+
+#+begin_src emacs-lisp
+
+  (eval-after-load 'typescript-mode
+    '(add-hook 'typescript-mode-hook
+               (lambda ()
+                 (add-hook 'after-save-hook #'catmacs/eslint-fix-file nil t))))
+#+end_src
+
+*** Haskell
 
 #+begin_src emacs-lisp
 
