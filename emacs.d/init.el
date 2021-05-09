@@ -304,7 +304,7 @@
 
 (defun catmacs/eslint-fix-file ()
   (interactive)
-  (shell-command (concat "eslint --fix " (buffer-file-name))))
+  (call-process-shell-command (concat "eslint --fix " (buffer-file-name))))
 
 (eval-after-load 'rjsx-mode
   '(add-hook 'rjsx-mode-hook
@@ -331,12 +331,31 @@
   :after lsp-mode
   :hook (lsp-mode . company-mode)
   :bind (:map company-active-map
-              ("<tab>" . company-complete-selection))
+              ("<tab>" . company-complete-common-or-cycle)
+              ("RET" . company-complete))
   (:map lsp-mode-map
         ("<tab>" . company-indent-or-complete-common))
   :custom
- (company-minimum-prefix-length 1)
+  (company-minimum-prefix-length 1)
   (company-idle-delay 0.0))
 
 (use-package company-box
   :hook (company-mode . company-box-mode))
+
+(defun catmacs/use-local-eslint ()
+  (let* ((root (locate-dominating-file
+                (or (buffer-file-name) default-directory)
+                "node_modules"))
+         (eslint (and root
+                      (expand-file-name "node_modules/eslint/bin/eslint.js"
+                                        root))))
+    (when (and eslint (file-executable-p eslint))
+      (setq-local flycheck-javascript-eslint-executable eslint))))
+
+;(use-package flycheck
+;  :hook (('after-init-hook #'global-flycheck-mode)
+         ;(flycheck-mode catmacs/use-local-eslint))
+  ;:config ((setq-default flycheck-disabled-checkers
+                         ;(append flycheck-disabled-checkers
+                                 ;'(javascript-jshint)))
+           ;((flycheck-add-mode 'javascript-eslint 'rjsx-mode))))
