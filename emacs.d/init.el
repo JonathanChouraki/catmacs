@@ -1,142 +1,21 @@
-; Set backup out of the way
+(setq create-lockfiles nil)
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
-
 (setq custom-file (concat user-emacs-directory "/custom.el"))
-                                        ; == Packages == ;
-(require 'package)
 
+(require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("org" . "https://orgmode.org/elpa/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
-
 (package-initialize)
-
 (unless package-archive-contents
   (package-refresh-contents))
-
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
-
 (require 'use-package)
 (setq use-package-always-ensure t)
-
-                                        ; == UI == ;
-(setq inhibit-startup-message t)
-(scroll-bar-mode -1)        ; Disable visible scrollbar
-(tool-bar-mode -1)          ; Disable the toolbar
-(tooltip-mode -1)           ; Disable tooltips
-(menu-bar-mode -1)          ; Disable the menu bar
-(blink-cursor-mode 0)       ; Not blinking cursor
-(set-face-attribute 'default nil :font "Fira Code" :height 110 :weight 'semi-bold)
-
-(use-package general
-  :config
-  (general-create-definer catmacs/leader-key
-    :keymaps '(normal visual emacs)
-    :prefix "SPC"))
-
-;; NOTE: The first time you load your configuration on a new machine, you'll
-;; need to run the following command interactively so that mode line icons
-;; display correctly:
-;;
-;; M-x all-the-icons-install-fonts
-(use-package all-the-icons)
-
-                                        ; == UX == ;
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
-(use-package rainbow-delimiters
-  :hook (emacs-lisp-mode . rainbow-delimiters-mode))
-
-(use-package counsel
-  :bind (("M-x" . counsel-M-x)
-         ("C-x b" . counsel-ibuffer)
-         ("C-x C-f" . counsel-find-file)
-         :map minibuffer-local-map
-         ("C-r" . 'counsel-minibuffer-history)))
-
-(use-package swiper)
-
-(use-package ivy
-  :diminish
-  :bind (:map ivy-minibuffer-map
-              ("TAB" . ivy-alt-done)
-              ("C-l" . ivy-alt-done)
-              ("C-j" . ivy-next-line)
-              ("C-f" . ivy-previous-line)
-              :map ivy-switch-buffer-map
-              ("C-f" . ivy-previous-line)
-              ("C-l" . ivy-done)
-              ("C-d" . ivy-switch-buffer-kill)
-              :map ivy-reverse-i-search-map
-              ("C-k" . ivy-previous-line)
-              ("C-d" . ivy-reverse-i-search-kill))
-  :config (ivy-mode 1))
-
-(use-package ivy-rich
-  :init
-  (ivy-rich-mode 1))
-
-(use-package helpful
-  :custom
-  (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
-  :bind
-  ([remap describe-function] . counsel-describe-function)
-  ([remap describe-command] . helpful-command)
-  ([remap describe-variable] . counsel-describe-variable)
-  ([remap describe-key] . helpful-key))
-
-(use-package which-key
-  :init (which-key-mode)
-  :diminish which-key-mode
-  :config
-  (setq which-key-idle-delay 0.75))
-
-
-                                        ; == Programming == ;
-(setq-default
- indent-tabs-mode nil ; Use space for indenting
- tab-width 2)
-                                        ;show-trailing-whitespace t) ; FIXME only show whitespace in prog mode
-                                        ;(add-hook 'prog-mode-hook 'whitepace-mode)
-(setq indent-line-function 'insert-tab)
-
-(use-package highlight-indent-guides)
-(setq highlight-indent-guides-method 'character)
-(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-
-(use-package projectile
-  :diminish projectile-mode
-  :config (projectile-mode)
-  :custom ((projectile-completion-system 'ivy))
-  :init
-  (setq projectile-project-search-path '("~/work/thecodeisgreen" "~/prog"))
-  (setq projectile-switch-project-action #'projectile-dired))
-
-(use-package counsel-projectile
-  :config (counsel-projectile-mode))
-
-(use-package magit)
-
-(use-package forge)
-
-(use-package org)
-
-(global-unset-key (kbd "C-s")) ; unbind C-s to use save buffer instead
-
-(general-define-key
- "C-s" #'save-buffer
- "C-f" #'swiper
- "C-p" #'counsel-projectile-find-file)
-
-                                        ; escape quit transient window
-(general-define-key
- :keymaps 'transient-base-map
- "<escape>" 'transient-quit-one)
 
 (use-package evil
   :bind (("C-k" . evil-scroll-up)
@@ -158,6 +37,8 @@
   (define-key evil-motion-state-map (kbd "C-f") nil)
   (define-key evil-normal-state-map (kbd "C-p") nil))
 
+(setq evil-shift-width 2)
+
 (use-package evil-collection
   :after evil
   :config
@@ -167,12 +48,37 @@
   :config
   (global-evil-surround-mode))
 
+(use-package general
+  :config
+  (general-create-definer catmacs/leader-key
+    :keymaps '(normal visual emacs)
+    :prefix "SPC"))
+
 (catmacs/leader-key
   "ct" '(counsel-load-theme :which-key "choose theme")
   "cm" '(magit :which-key "magit")
   "x" '(counsel-M-x :which-key "M-x")
   "w" '(evil-window-map :which-key "window management")
   "p" '(projectile-command-map :which-key "projectile"))
+
+(global-unset-key (kbd "C-s"))
+
+(general-define-key
+ "C-s" #'save-buffer
+ "C-f" #'swiper
+ "C-p" #'counsel-projectile-find-file)
+
+(general-define-key
+ :keymaps 'transient-base-map
+ "<escape>" 'transient-quit-one)
+
+(setq inhibit-startup-message t)
+(scroll-bar-mode -1)        
+(tool-bar-mode -1)         
+(tooltip-mode -1)         
+(menu-bar-mode -1)       
+(blink-cursor-mode 0)   
+(set-face-attribute 'default nil :font "Fira Code" :height 110 :weight 'semi-bold)
 
 (use-package doom-modeline
   :init (doom-modeline-mode 1))
@@ -182,6 +88,8 @@
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
   :init (load-theme 'catmacs-palenight t))
+
+(use-package all-the-icons)
 
 (set-fringe-mode 15)
 (set-face-attribute 'fringe nil :background nil)
@@ -220,6 +128,53 @@
 (catmacs/leader-key
   "tt" '(centaur-tabs--create-new-tab :which-key "new tab")
   "ts" '(centaur-tabs-counsel-switch-group :which-key "switch tabs group"))
+
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+(use-package ivy
+  :diminish
+  :bind (:map ivy-minibuffer-map
+              ("TAB" . ivy-alt-done)
+              ("C-l" . ivy-alt-done)
+              ("C-j" . ivy-next-line)
+              ("C-f" . ivy-previous-line)
+              :map ivy-switch-buffer-map
+              ("C-f" . ivy-previous-line)
+              ("C-l" . ivy-done)
+              ("C-d" . ivy-switch-buffer-kill)
+              :map ivy-reverse-i-search-map
+              ("C-k" . ivy-previous-line)
+              ("C-d" . ivy-reverse-i-search-kill))
+  :config (ivy-mode 1))
+
+(use-package ivy-rich
+  :init
+  (ivy-rich-mode 1))
+
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
+
+(use-package swiper)
+
+(use-package counsel
+  :bind (("M-x" . counsel-M-x)
+         ("C-x b" . counsel-ibuffer)
+         ("C-x C-f" . counsel-find-file)
+         :map minibuffer-local-map
+         ("C-r" . 'counsel-minibuffer-history)))
+
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.75))
 
 (use-package neotree
   :config
@@ -282,6 +237,27 @@
 
 ;(require 'ob-shstream)
 
+(setq c-basic-offset 2)
+(setq-default
+ indent-tabs-mode nil 
+ tab-width 2)
+(setq indent-line-function 'insert-tab)
+
+(use-package highlight-indent-guides)
+(setq highlight-indent-guides-method 'character)
+(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+
+(use-package projectile
+  :diminish projectile-mode
+  :config (projectile-mode)
+  :custom ((projectile-completion-system 'ivy))
+  :init
+  (setq projectile-project-search-path '("~/work/thecodeisgreen" "~/prog"))
+  (setq projectile-switch-project-action #'projectile-dired))
+
+(use-package counsel-projectile
+  :config (counsel-projectile-mode))
+
 (defun catmacs/lsp-mode-setup ()
   (lsp-enable-which-key-intgration)
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
@@ -293,10 +269,17 @@
   :config 
   (lsp-enable-which-key-integration t)
   (define-key lsp-mode-map (kbd "C-l") lsp-command-map)
+  (setq lsp-log-io nil)
   :hook ((lsp-mode  catmacs/lsp-mode-setup)
          (rjsx-mode . lsp-deferred)))
 
+(setq gc-cons-threshold 100000000)
+(setq read-process-output-max (* 1024 3072))
+
 (use-package lsp-ivy)
+
+(use-package rainbow-delimiters
+  :hook (emacs-lisp-mode . rainbow-delimiters-mode))
 
 (use-package rjsx-mode
   :mode ("\\.jsx?$" . rjsx-mode)
@@ -322,12 +305,18 @@
              (lambda ()
                (add-hook 'after-save-hook #'catmacs/eslint-fix-file nil t))))
 
-(use-package haskell-mode)
+(use-package haskell-mode
+  :config (setq haskell-indent-level 2))
+(use-package lsp-haskell
+  :after lsp-mode
+  :config (setq lsp-haskell-formatting-provider "stylish-haskell"))
 (use-package hindent)
+(use-package flymake-hlint)
 (setq haskell-process-type 'cabal-new-repl)
-(setq haskell-process-log t)
+                                        ;(setq haskell-process-log t) 
 
-(add-hook 'haskell-mode-hook 'haskell-indent-mode)
+(add-hook 'haskell-mode-hook #'lsp)
+(add-hook 'haskell-literate-mode-hook #'lsp)
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 (add-hook 'haskell-mode-hook 'haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'hindent-mode)
@@ -341,8 +330,8 @@
   (:map lsp-mode-map
         ("<tab>" . company-indent-or-complete-common))
   :custom
-  (company-minimum-prefix-length 1)
-  (company-idle-delay 0.0))
+  (company-minimum-prefix-length 3)
+  (company-idle-delay 0.3))
 
 (use-package company-box
   :hook (company-mode . company-box-mode))
@@ -364,3 +353,6 @@
                          ;(append flycheck-disabled-checkers
                                  ;'(javascript-jshint)))
            ;((flycheck-add-mode 'javascript-eslint 'rjsx-mode))))
+
+(use-package magit)
+(use-package forge)
