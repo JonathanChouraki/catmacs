@@ -321,6 +321,8 @@
 (add-hook 'haskell-mode-hook 'haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'hindent-mode)
 
+(use-package yaml-mode)
+
 (use-package company
   :after lsp-mode
   :hook (lsp-mode . company-mode)

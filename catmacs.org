@@ -645,6 +645,14 @@ As with javascript, we run eslint automatically when saving file
 
 *** TODO Purescript
 
+*** YAML
+
+#+begin_src emacs-lisp
+
+  (use-package yaml-mode)
+
+#+end_src
+
 ** Company
 
 #+begin_src emacs-lisp
