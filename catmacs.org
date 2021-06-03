@@ -653,6 +653,15 @@ As with javascript, we run eslint automatically when saving file
 
 #+end_src
 
+*** Rust
+
+#+begin_src emacs-lisp
+
+    (use-package rustic
+      :config (setq rustic-format-on-save t))
+
+#+end_src
+
 ** Company
 
 #+begin_src emacs-lisp

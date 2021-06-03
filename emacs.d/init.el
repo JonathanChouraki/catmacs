@@ -323,6 +323,9 @@
 
 (use-package yaml-mode)
 
+(use-package rustic
+  :config (setq rustic-format-on-save t))
+
 (use-package company
   :after lsp-mode
   :hook (lsp-mode . company-mode)
