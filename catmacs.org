@@ -655,10 +655,22 @@ As with javascript, we run eslint automatically when saving file
 
 *** Rust
 
+Rustic add support for rust source files. IDE features are provided by RLS. To install it, first run
+
+#+begin_src sh
+
+  rustup update
+  rustup component add rls rust-analysis rust-src
+
+#+end_src
+
+Then install and configure rustic
+
 #+begin_src emacs-lisp
 
-    (use-package rustic
-      :config (setq rustic-format-on-save t))
+  (use-package rustic
+    :config (setq rustic-format-on-save t)
+    (setq rustic-lsp-server 'rls))
 
 #+end_src
 

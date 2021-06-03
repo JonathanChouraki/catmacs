@@ -324,7 +324,8 @@
 (use-package yaml-mode)
 
 (use-package rustic
-  :config (setq rustic-format-on-save t))
+  :config (setq rustic-format-on-save t)
+  (setq rustic-lsp-server 'rls))
 
 (use-package company
   :after lsp-mode
